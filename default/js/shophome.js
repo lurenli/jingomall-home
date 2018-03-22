@@ -1,0 +1,90 @@
+$(function() {
+	WST.dropDownLayer(".wst-shop-code",".wst-shop-codes");
+	$(".ck-slide-wrapper img").width(1200);
+	$('.ck-slide').ckSlide({
+		autoPlay: true,
+		time:5000,
+		isAnimate:true,
+		dir: 'x'
+	});
+	$(".wst-shop-goimg").hover(function(){
+		$(this).find(".js-cart").slideDown(100);
+	},function(){
+		$(this).find(".js-cart").slideUp(100);
+	});
+});
+function dropDown(obj,id){
+    if( $(obj).attr('class').indexOf('js-shop-plus') > -1 ){
+    	$(obj).removeClass('js-shop-plus').addClass('js-shop-redu');
+    	$('.tree_'+id).slideUp();
+    }else{
+    	$(obj).removeClass('js-shop-redu').addClass('js-shop-plus');
+    	$('.tree_'+id).slideDown();
+    }
+}
+
+
+//添加代码
+function searchShopsGoods(obj,status=1){
+	
+    if(status == 1){
+        var mdesc = $('#mdesc').val();
+        if($('#msort').val() != obj)mdesc = 0;
+        var msort = obj;
+        var params = new Array();
+        params.push("shopId=" + $("#shopId").val());
+        params.push("msort=" + obj);
+        params.push("mdesc=" + ((mdesc=="0")?"1":"0"));
+
+        var sprice = $("#sprice").val();
+        var eprice = $("#eprice").val();
+        if(sprice != '' && sprice != null){
+            params.push("sprice=" + sprice);
+        }
+        if(eprice != null && eprice != ''){
+            params.push("eprice=" + eprice);
+        }
+
+        params.push("ct1=" + $("#ct1").val());
+        params.push("ct2=" + $("#ct2").val());
+        params.push("goodsName=" + $("#goodsName").val());
+    }
+    if(status == 2){
+        var params = new Array();
+        params.push("shopId=" + $("#shopId").val());
+        params.push("goodsName=" + $("#goodsName2").html());
+    } 
+	location.href = WST.U('home/shops/afterHome',params.join('&'),true);
+}
+
+function searchShopsGoodsContent(obj){
+    var mdesc = $('#mdesc').val();
+    if($('#msort').val() != obj)mdesc = 0;
+    var msort = obj;
+    var params = new Array();
+    params.push("shopId=" + $("#shopId").val());
+    params.push("msort=" + obj);
+    params.push("mdesc=" + ((mdesc=="0")?"1":"0"));
+
+    var sprice = $("#sprice").val();
+    var eprice = $("#eprice").val();
+	var shua = Number(eprice);
+    var shub = Number(sprice);
+    if (shub > shua) {
+    	var temp = eprice;
+		eprice = sprice;
+		sprice = temp;
+	}
+
+    if(sprice != '' && sprice != null){
+        params.push("sprice=" + sprice);
+    }
+    if(eprice != '' && eprice != null ){
+        params.push("eprice=" + eprice);
+    }
+
+    params.push("ct1=" + $("#ct1").val());
+    params.push("ct2=" + $("#ct2").val());
+    params.push("goodsName=" + $("#goodsName").val());
+    location.href = WST.U('home/shops/afterHome',params.join('&'),true);
+}

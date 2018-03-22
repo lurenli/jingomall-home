@@ -1,0 +1,134 @@
+{extend name="default/base" /}
+{block name="title"}我的购物车 - {:WSTConf('CONF.mallName')}{__block__}{/block}
+{block name="css"}
+<link href="__STYLE__/css/carts.css?v={$v}" rel="stylesheet">
+{/block}
+{block name="main"}
+<div class="wst-container">
+	
+    <!-- <div class="pay-sbox-head">
+    	<a href='{$Request.root.true}'>首页</a>&nbsp;&gt;&nbsp;支付
+    </div>
+    <div>
+    	<div class="pay-tip2"></div>
+    </div> -->
+    <div class='pay-sbox' >
+    	<div class="balance-box">
+    		<div class="balance-left">
+    			<div class="top">
+    				<img src="#" class="user-img">
+    			</div>
+    			<p class="user-name">不知道</p>
+    		</div>
+    		<div class="balance-right">
+    			<div class="pay-list">
+    				<div class="pay-time">
+    					<p class="line-time">下单时间 : <b>111111111</b></p>
+    					<p class="remove"><a href="#">取消订单</a></p>
+    				</div>
+    				<div class="pay-name">
+    					<div class="name-top">
+    						<p class="receiver">收货人 : <b>不知道</b></p>
+    						<p class="tel">联系方式 : <b>12345678910</b></p>
+    					</div>
+    					<div class="name-bottom"> 
+                            <p class="address">收货地址 : <b>浙江省杭州市江干区来福士广场T2写字楼</b></p>
+    						<select class="select">
+    							<option value="">修改地址</option>
+    						</select>
+    					</div>
+    				</div>
+    				<div class="pay-money"> 
+                          <p class="shops-total">商品合计:<b></b></p>
+                          <p class="deliverMoney">运费:<b></b></p>
+                          <p class="summary-money">应付:</p>
+                          <a href="#" class="payment">付款  47:25</a>
+    				</div>
+    				<p class="ticket"><a href="#">补开发票</a></p>
+    			</div>
+
+    			<div class="shops-msg"> 
+    				<ul class="shops-head"> 
+                      <li class="shop-msg">商品信息</li>
+                      <li class="shop-price">单价</li>
+                      <li class="shop-num">数量</li>
+                      <li class="shop-pay">实付</li>
+                      <li class="shop-line">快递</li>
+                      <li class="shop-state">状态</li>
+    			    </ul>
+    				<div class="item-list"> 
+    					<div class="xian1"></div>
+    					<div class="xian2"></div>
+                      <ol>
+                      	<li class="item-img"> 
+                      		<div style="width:138px;height:138px;position:relative;border:1px solid #e8e8e8">
+	                           <a href='#'>
+								  <img src="#"/ style="position:absolute;width:100px;height:100px;margin:auto;top: 0;left: 0;right: 0;bottom: 0">
+							  </a>
+							</div>
+                      	</li>
+                      	<li class="item-msg">
+                      		<p>11111111111</p>
+							<p>2524142472</p>	
+                      	</li>
+                      	<li class="item-price"><p>￥<b>1212</b></p></li>
+                      	<li class="item-count"><p>1</p></li>
+                      	<li class="item-money"><p>1212</p</li>
+                      	<li class="item-line"><p>无</p></li>
+                      	<li class="item-state"><p>未付款</p></li>
+                      </ol>
+    				</div>
+    		    </div>
+    	   <!--<div class='tips-box'>待支付订单总额：<span class="wst-fred">￥{$needPay}</span></div>
+		    <div class='wst-wallet-box'>
+	        	<div class='wst-wallte-item'>
+	        	钱包余额：<span class="wst-fred">￥{$userMoney}</span>
+	        	</div>
+                <div style='float:right;'>支付：<span class="wst-fred">￥{$needPay}</span></div>
+	        </div> -->
+	        {if ($userMoney>=$needPay)}
+			  {if condition="$status['status'] eq 1"}
+			<div  class="pay-btn-psd" onclick="location.href=WST.U('home/users/editPayPass')">立即设置支付密码</div>
+
+			{else /}
+				  <!--{if condition="$status['status'] eq 2"}-->
+						<!--<div class="pbox">-->
+							<!--<input type='hidden' id='paytype' value='1' class='j-ipt' autocomplete="off" />-->
+							<!--<input type='hidden' id='key' value='{$paykey}' class='j-ipt' autocomplete="off" />-->
+							 <!--支付密码：<input type='password' class='u-query j-ipt' id='payPwd' autocomplete='off'>-->
+							<!--<a class='pbox-tip' target='_blank' href='{:url("home/users/editPayPass")}'>忘记密码?</a>-->
+						<!--</div>-->
+						<!--<div class="pbox2">-->
+						<!--<button class="pay-btn" type="button" style="width:100px;height: 30px;" onclick='javascript:payByWallet()'>确认支付</button>-->
+						<!--</div>-->
+				  <!--{/if}-->
+					{if condition="($status['status'] eq 3 && $needPay <= $status['moneylevel']) || $status['status'] eq 4"}
+					<div class="pbox2">
+						<input type='hidden' id='key' value='{$paykey}' class='j-ipt' autocomplete="off" />
+						<button class="pay-btn" type="button" style="width:100px;height: 30px;" onclick='javascript:payByWallet()'>确认支付</button>
+					</div>
+					{/if}
+					{if condition="($status['status'] eq 3 && $needPay > $status['moneylevel']) || $status['status'] eq 2"}
+					<!-- <div class="pbox">
+						<input type='hidden' id='paytype' value='1' class='j-ipt' autocomplete="off" />
+						<input type='hidden' id='key' value='{$paykey}' class='j-ipt' autocomplete="off" />
+						支付密码：<input type='password' class='u-query j-ipt' id='payPwd' autocomplete='off'>
+						<a class='pbox-tip' target='_blank' href='{:url("home/users/editPayPass")}'>忘记密码?</a>
+					</div> -->
+					<!-- <div class="pbox2">
+						<button class="pay-btn" type="button" style="width:100px;height: 30px;" onclick='javascript:payByWallet()'>确认支付</button>
+					</div> -->
+					{/if}
+			  {/if}
+	        {else}
+	        <div class="pbox">
+	         	<img src='__STYLE__/img/icon_jinggao.png'>&nbsp;很抱歉，您的钱包余额不足，不能进行支付。<a class='pbox-tip' href='javascript:void(0)' onclick="javascript:history.go(-1)">返回上一页</a>。
+	        </div>
+	        {/if}
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STYLE__/js/carts.js?v={$v}'></script>
+{/block}

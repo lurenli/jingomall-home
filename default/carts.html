@@ -1,0 +1,406 @@
+{extend name="default/base" /}
+{block name="title"}我的购物车 - {:WSTConf('CONF.mallName')}{__block__}{/block}
+{block name="css"}
+<link href="__STYLE__/css/carts.css?v={$v}" rel="stylesheet">
+{/block}
+{block name="main"}
+<div class="wst-container">
+	<div class='wst-clear'></div>
+	{if !empty($carts["carts"])}
+    <div class='main-head'>
+		<ul class="shop" style="width:859px;height:40px;margin:0 auto;">
+			<li>
+				<div class="yuan red">1</div>
+				<span class="red2">购物车</span>
+				<b class="xian">——————————</b>
+			</li>
+			<li>
+				<div class="yuan">2</div>
+				<span>填写核对账单信息</span>
+				<b class="xian">——————————</b>
+			</li>
+			<li>
+				<div class="yuan">3</div>
+				<span>成功提交订单</span>
+			</li>
+		</ul>
+	</div>
+  {/if}
+    <div class='cart-box'>
+       <div class='cart-head'>
+          <div class='chk'><input type='checkbox' class="j-chh" onclick='checkChks(this,".j-chk")'><span>全选</span></div>
+          <div class='goods'>商品信息</div>
+          <div class='price'>单价</div>
+          <div class='num'>数量</div>
+          <div class='t-price'>小计</div>
+          <div class='action'>操作</div>
+	   </div>
+       {if !empty($carts["carts"])}
+	       {volist name='$carts["carts"]' id='vo'}
+	       <div class='cart-item'>
+	          <div class='goods-list'>
+			{volist name='vo["list"]' id='vo2'}
+			{if condition="($vo2['isSale'] eq 0) OR (($vo2['specStock'] eq 0 && $vo2['goodsSpecId'] neq 0)) OR (($vo2['goodsStock'] eq 0 && $vo2['specStock'] eq 0))"}
+			<div class='item j-chk {if $vo2["isCheck"]==1}selected{/if} j-s{$vo['shopId']} j-g{$vo2["cartId"]}'>
+			<div class="goodsl" style="width: 20px;padding-top: 30px; padding-left: 10px; float: left;color:red;"><span class="shixiao">失效</span></div>
+				  <div class='goods'>
+					  <div class='img'>
+						  <a href='{:Url("home/goods/detail","id=".$vo2["goodsId"])}' target='_blank'>
+							  <img src='http://jingomall.com.cn/{$vo2["goodsImg"]}' style="width:90px; height:90px;position:absolute;margin: auto;top: 0;left: 0;right: 0;bottom: 0" title='{$vo2["goodsName"]}'/>
+						  </a>
+					  </div>
+					  <div class='name'>
+							{$vo2["goodsName"]}
+							<p>
+								<!-- 对应的颜色- -->	
+								{if !empty($vo2["specNames"])}
+									{$vo2["specNames"][0]['itemName']}
+								{/if}  
+							</p>	
+						</div>
+					  <!-- <div class='spec' data-id='1'>
+						    {volist name='vo2["specNames"]' id='specs'}
+						  <div>{$specs['catName']}：{$specs['itemName']}</div>
+						  {/volist} 
+					  </div> -->
+				  </div>
+				  <div class='price'>¥{$vo2['shopPrice']}</div>
+				  <div class='num'>
+					  <a href='#none' class='buy-btn' id="buy-reduce_{$vo2['cartId']}" onclick='javascript:WST.changeIptNum(-1,"#buyNum","#buy-reduce,#buy-add",{$vo2['cartId']},"statCartMoney")'>-</a>
+					  <input type='text' id="buyNum_{$vo2['cartId']}" class='buy-num' value="{$vo2['cartNum']}" data-max="{$vo2['goodsStock']}" data-min='1' onkeyup='WST.changeIptNum(0,"#buyNum","#buy-reduce,#buy-add",{$vo2['cartId']},"statCartMoney")' autocomplete="off"  onkeypress="return WST.isNumberKey(event);" maxlength="6"/>
+					  <a href='#none' class='buy-btn' id="buy-add_{$vo2['cartId']}" onclick='javascript:WST.changeIptNum(1,"#buyNum","#buy-reduce,#buy-add",{$vo2['cartId']},"statCartMoney")'>+</a>
+					  <div id="err_{$vo2['cartId']}" class='wst-clear'></div>
+			  </div>
+			   <div class='t-price'>¥<span id="tprice_{$vo2['cartId']}" class="dj">{$vo2['shopPrice']*$vo2['cartNum']}</span></div>
+			   <div class='action'>
+				   <div class="collection"><a href='javascript:WST.addFavorite({$vo2["cartId"]})'>收藏</a></div>
+				   <a href='javascript:WST.delCart({$vo2["cartId"]})'>删除</a>
+				</div>
+			   <div class='wst-clear'></div>
+		   </div>
+		   
+		{else /}
+					<div class='item j-chk {if $vo2["isCheck"]==1}selected{/if} j-s{$vo['shopId']} j-g{$vo2["cartId"]}'>
+					<div class="goodsl" style="float: left;"><span></span></div>
+					<div class='chk'>
+						<input id='gchk_{$vo2["cartId"]}' name="delcart" type='checkbox' {if $vo2["isCheck"]==1}checked{/if} mval="{$vo2['shopPrice']}" value="{$vo2['cartId']}" sval="{$vo2['goodsStock']}" allowbuy="{$vo2['allowBuy']}" class='j-chk j-s{$vo['shopId']} j-gchk aa' onclick='checkChks(this,".j-g{$vo2["cartId"]}")'>
+					</div>					
+					<div class='goods'>
+						<div class='img'>
+							<a href='{:Url("home/goods/detail","id=".$vo2["goodsId"])}' target='_blank'>
+								<img src='http://jingomall.com.cn/{$vo2["goodsImg"]}' style="width:90px; height:90px;position:absolute;margin: auto;top: 0;left: 0;right: 0;bottom: 0" title='{$vo2["goodsName"]}'/>
+							</a>
+						</div>
+						<div class='name'>
+							{$vo2["goodsName"]}
+							<p>
+								<!-- 对应的颜色- -->	
+								{if !empty($vo2["specNames"])}
+									{$vo2["specNames"][0]['itemName']}
+								{/if}  
+							</p>	
+						</div>
+						<!-- <div class='spec' data-id='12'>
+							 {volist name='vo2["specNames"]' id='specs'}
+							<div>{$specs['catName']}：{$specs['itemName']}</div>
+							{/volist}
+						</div>  -->
+					</div>
+					<div class='price'>¥{$vo2['shopPrice']}</div>
+					<div class='num'>
+						<a href='#none' class='buy-btn' id='buy-reduce_{$vo2['cartId']}' onclick='javascript:WST.changeIptNum(-1,"#buyNum","#buy-reduce,#buy-add",{$vo2['cartId']},"statCartMoney")'>-</a>
+						<input type='text' id='buyNum_{$vo2['cartId']}' class='buy-num' value="{$vo2['cartNum']}" data-max="{$vo2['goodsStock']}" data-min='1' onkeyup='WST.changeIptNum(0,"#buyNum","#buy-reduce,#buy-add",{$vo2['cartId']},"statCartMoney")' autocomplete="off"  onkeypress="return WST.isNumberKey(event);" maxlength="6"/>
+						<a href='#none' class='buy-btn' id='buy-add_{$vo2['cartId']}' onclick='javascript:WST.changeIptNum(1,"#buyNum","#buy-reduce,#buy-add",{$vo2['cartId']},"statCartMoney")'>+</a>
+						<div id='err_{$vo2['cartId']}' class='wst-clear'></div>
+				</div>
+				<div class='t-price'>¥<span id="tprice_{$vo2['cartId']}" class="dj">{$vo2['shopPrice']*$vo2['cartNum']}</span></div>
+				<div class='action'>
+						
+					<div class="collection">
+						<!-- <a href='javascript:WST.addFavorite({$vo2["cartId"]})'>收藏</a> -->
+						<a href='javascript:void(0);' onclick='WST.addFavorite(this,0,{$vo2["goodsId"]},{$vo2["goodsId"]})'>收藏</a>	
+					</div>
+					 <a href='javascript:WST.delCart({$vo2["cartId"]})'>删除</a>
+				</div>
+				<div class='wst-clear'></div>
+			</div>
+			{/if}
+			{/volist}
+	          </div>
+	       </div>
+	       {/volist}
+	       <div class='cart-footer selected2'>
+	          <div class='cart-summary'>
+				  <div class="cart-left">
+					<div class='chk' style="float: left;width: 20px;padding-left: 24px;">
+							<input  name="delcart" type='checkbox' id="hascheck"  onclick='checkChks(this,".j-g{$vo2["cartId"]}")'>
+					</div> 
+					<p style="float:left;margin-left:10px">已选（<span id="num">{$carts["goodsTotalNum"]}</span>）</p>
+	          	 <!--新增批量删除功能-->
+				    <div  class="delete"><a href='javascript:;' onclick='delCarts()'>批量删除</a></div>
+					<div  class="remove"><a href='javascript:;'>清空失效商品</a></div>
+					</div>
+					<div  class="total">
+						商品合计&nbsp;:&nbsp;&nbsp;￥
+						<span id='totalMoney2'>{$carts["goodsTotalMoney"]}</span>
+						&nbsp;活动优惠 &nbsp;:&nbsp;&nbsp;-&nbsp;￥<span class="">0.00</span>
+					</div>
+					<div class='summary'>
+						<div class="summary-box">
+						应付金额：<b>￥</b>
+						<span id='totalMoney'>{$carts["goodsTotalMoney"]}</span>
+						<p>已免邮></p>
+						</div>
+						<a href='#none' onclick='toSettlement()' class='wst-next wst-cart-reda'>下单</a>
+					</div>
+	        
+	             <div class='wst-clear'></div>
+	          </div>
+		   </div>
+		    <!-- 猜你喜欢-->
+	       	<div class="cate-love wst-clear"> 
+				<div class="title" > 
+					<h4>猜你喜欢</h4>
+				</div> 
+				<div class="content">
+					<div class="btn-left"><a href="javascript:;"><</a></div>
+					<div class="box">
+						<ul id="img"> 
+							<li>
+									<a href="javascript:;" class="img">
+										<img src="http://jingomall.com.cn/upload/goods/2017-06/91427b729becc0da88449a1f7a75502e.jpg"/>
+									</a>
+									<a href="javscript:;">
+										<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+										<p class="price">￥568.00</p>
+									</a>
+								</li>
+								<li>
+										<a href="javascript:;" class="img">
+											<img src="http://jingomall.com.cn/upload/goods/2017-06/2be0c1b9050e472c0fb8c72ad867b9d5.jpg"/>
+										</a>
+										<a href="javscript:;">
+											<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+											<p class="price">￥568.00</p>
+										</a>
+								</li>
+								<li>
+										<a href="javascript:;" class="img">
+											<img src="http://jingomall.com.cn/upload/goods/2017-06/3bc46c36f332229524c1530faaefb7f5.jpg"/>
+										</a>
+										<a href="javscript:;">
+											<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+											<p class="price">￥568.00</p>
+										</a>
+								</li>
+								<li>
+										<a href="javascript:;" class="img">
+											<img src="http://jingomall.com.cn/upload/goods/2017-09/5bc45f29d25b34299fcf608aeeca8a89.jpg"/>
+										</a>
+										<a href="javscript:;">
+											<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+											<p class="price">￥568.00</p>
+										</a>
+								</li>
+								<li>
+										<a href="javascript:;" class="img">
+											<img src="http://jingomall.com.cn/upload/goods/2017-06/9020c19bf78fd5710837069542caacfb.jpg"/>
+										</a>
+										<a href="javscript:;">
+											<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+											<p class="price">￥568.00</p>
+										</a>
+								</li>
+								<li>
+										<a href="javascript:;" class="img">
+											<img src="http://jingomall.com.cn/upload/goods/2017-06/4b6a442abc05c5a136ddc52b46757b7e.jpg"/>
+										</a>
+										<a href="javscript:;">
+											<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+											<p class="price">￥568.00</p>
+										</a>
+								</li>
+								<li>
+										<a href="javascript:;" class="img">
+											<img src="http://jingomall.com.cn/upload/goods/2017-06/34c55457c3fe8f40a47493d40c936581.jpg"/>
+										</a>
+										<a href="javscript:;">
+											<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+											<p class="price">￥568.00</p>
+										</a>
+								</li>
+								<li>
+										<a href="javascript:;" class="img">
+											<img src="http://jingomall.com.cn/upload/goods/2017-06/e88ef5d204385caa2563e0096a8c65de.jpg"/>
+										</a>
+										<a href="javscript:;">
+											<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+											<p class="price">￥568.00</p>
+										</a>
+								</li>
+						</ul>
+					</div>
+					<div class="btn-right"><a href="javascript:;">></a></div> 
+				</div>
+			</div>
+
+	   {else}
+	    <div class="shop-air"> 
+              <img src="#">
+              <p>购物车还很空</p>
+              <a href="http://localhost/jingomall/home" class="shop-enter">再逛逛</a>
+	    </div>
+	 <!-- 猜你喜欢 -->
+	  <div class="cate-love wst-clear"> 
+			<div class="title" > 
+				<h4>猜你喜欢</h4>
+			</div> 
+			<div class="content">
+				<div class="btn-left"><a href="javascript:;"><</a></div>
+				<div class="box">
+					<ul id="img"> 
+						<li>
+								<a href="javascript:;" class="img">
+									<img src="http://jingomall.com.cn/upload/goods/2017-06/91427b729becc0da88449a1f7a75502e.jpg"/>
+								</a>
+							    <a href="javscript:;">
+									<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+								    <p class="price">￥568.00</p>
+								</a>
+							</li>
+							<li>
+									<a href="javascript:;" class="img">
+										<img src="http://jingomall.com.cn/upload/goods/2017-06/2be0c1b9050e472c0fb8c72ad867b9d5.jpg"/>
+									</a>
+									<a href="javscript:;">
+										<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+										<p class="price">￥568.00</p>
+									</a>
+							</li>
+							<li>
+									<a href="javascript:;" class="img">
+										<img src="http://jingomall.com.cn/upload/goods/2017-06/3bc46c36f332229524c1530faaefb7f5.jpg"/>
+									</a>
+									<a href="javscript:;">
+										<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+										<p class="price">￥568.00</p>
+									</a>
+							</li>
+							<li>
+									<a href="javascript:;" class="img">
+										<img src="http://jingomall.com.cn/upload/goods/2017-09/5bc45f29d25b34299fcf608aeeca8a89.jpg"/>
+									</a>
+									<a href="javscript:;">
+										<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+										<p class="price">￥568.00</p>
+									</a>
+							</li>
+							<li>
+									<a href="javascript:;" class="img">
+										<img src="http://jingomall.com.cn/upload/goods/2017-06/9020c19bf78fd5710837069542caacfb.jpg"/>
+									</a>
+									<a href="javscript:;">
+										<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+										<p class="price">￥568.00</p>
+									</a>
+							</li>
+							<li>
+									<a href="javascript:;" class="img">
+										<img src="http://jingomall.com.cn/upload/goods/2017-06/4b6a442abc05c5a136ddc52b46757b7e.jpg"/>
+									</a>
+									<a href="javscript:;">
+										<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+										<p class="price">￥568.00</p>
+									</a>
+							</li>
+							<li>
+									<a href="javascript:;" class="img">
+										<img src="http://jingomall.com.cn/upload/goods/2017-06/34c55457c3fe8f40a47493d40c936581.jpg"/>
+									</a>
+									<a href="javscript:;">
+										<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+										<p class="price">￥568.00</p>
+									</a>
+							</li>
+							<li>
+									<a href="javascript:;" class="img">
+										<img src="http://jingomall.com.cn/upload/goods/2017-06/e88ef5d204385caa2563e0096a8c65de.jpg"/>
+									</a>
+									<a href="javscript:;">
+										<p class="details">Senser森塞尔 蓝牙降噪无线</p>
+										<p class="price">￥568.00</p>
+									</a>
+							</li>
+					</ul>
+				</div>
+				<div class="btn-right"><a href="javascript:;">></a></div> 
+			</div>
+		</div>
+	{/if}
+</div>
+{/block}
+{block name="js"}
+
+<script type='text/javascript' src='__STYLE__/js/carts.js?v={$v}'></script>
+<script type='text/javascript'>
+//设置定时器刷新页面
+$(function(){
+    setInterval(res,1000);
+});
+//商品下架 判断页面是否刷新
+function res(){
+    $.post(WST.U('home/Carts/viewCartsList'),function(data){
+        for(var i=0;i<data.length;i++){
+            if(data[i].isSale == 0 ){
+//                window.location.reload();
+                if(!$(".goodsl").eq(i).find("span").hasClass("shixiao")){
+                    window.location.reload();
+                }
+            }
+            if(data[i].specStock == 0 ){
+                //window.location.reload();
+                if(!$(".goodsl").eq(i).find("span").hasClass("shixiao")){
+                    window.location.reload();
+                }
+            }
+        }
+    })
+}
+</script>
+<!--猜你喜欢轮播图片-->
+<script language="javascript">
+$(function(){
+	var count=$("#img").children('li').length;
+	var $items = $("#img").children()
+    var curNum=0;
+    //左滑动
+     $(".btn-left").click(function(){
+		   //如果到了最后一个元素 停止
+		   if((count-curNum)<=4){
+		     return false;
+		 }
+		   curNum+=1;
+		   $("#img").animate({
+		    left:'-=260'
+		   },500,function(){
+		   	//curNum+=1; 
+		   });
+    });
+    //右滑动
+    $(".btn-right").click(function(){
+		   //如果到了第一个元素 停止
+		   if(curNum<=0){
+		      return false;
+		   }
+		   curNum-=1;
+		   $("#img").animate({
+		    left:'+=260'
+		   },500,function(){
+		    //curNum-=1;    //写在这里同样问题
+		   });
+    });
+   
+})
+
+</script> 
+{/block}

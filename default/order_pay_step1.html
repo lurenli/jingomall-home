@@ -1,0 +1,98 @@
+{extend name="default/base" /}
+{block name="title"}我的购物车 - {:WSTConf('CONF.mallName')}{__block__}{/block}
+{block name="css"}
+<link href="__STYLE__/css/carts.css?v={$v}" rel="stylesheet">
+{/block}
+{block name="main"}
+<div class="wst-container">
+    <div class="wst-top">
+			<h4>选择支付方式</h4>
+			<p>交易号 : <span>{$orderNo}</span></p>
+			<p>实付 ：￥<b class="wst-fred">{$object['totalMoney']}</b></p> 
+	</div> 
+
+    <div class='pay-sbox'>
+	   <div class="tips-box">
+	    	<input type="hidden" id="orderNo" value="{$orderNo}" />
+	    	<input type="hidden" id="isBatch" value="{$isBatch}"/>
+	    </div>
+	    <div class="pay-content"> 
+		    <div class="pay-type">支付方式</div>
+		    <div class="pay-list">
+		    	<input type="hidden" id="payCode" name="payCode" />
+		    	{volist name="$rs['payments']" id="payment"}
+                 	{if condition="$payment['isOnline'] eq 1"}
+                    	<div class="wst-payCode-{$payment['payCode']}" data="{$payment['payCode']}"></div>
+                 	{/if}
+                 {/volist}
+		         <div class="wst-clear"></div>
+		    </div>
+	</div>
+	<div class="bnt-box">
+		<div class="right-box">
+			<div onclick='javascript:getPayUrl();' class="wst-pay-bnt">去支付</div>
+			<p>剩余支付时间 :
+				<span id="minute_show">0分</span>
+				<span id="second_show">0秒</span>
+			</p>
+	  </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STYLE__/js/carts.js?v={$v}'></script>
+<script>
+$(function(){
+	$("#wst-check-orders").click(function(){
+		$("#wst-orders-box").slideToggle(600);
+	});
+	$("div[class^=wst-payCode]").click(function(){
+		var payCode = $(this).attr("data");
+		$("div[class^=wst-payCode]").each(function(){
+			$(this).removeClass().addClass("wst-payCode-"+$(this).attr("data"));
+		});
+		$(this).removeClass().addClass("wst-payCode-"+payCode+"-curr");
+		$("#payCode").val(payCode);
+	});
+	if($("div[class^=wst-payCode]").length>0){
+		$("div[class^=wst-payCode]")[0].click();
+	}
+//倒计时
+var intDiff = parseInt(120);    //倒计时总秒数量
+  function timer(intDiff) {
+   window.setInterval(function () {
+    var day = 0,
+     hour = 0,
+     minute = 0,
+     second = 0;//时间默认值
+    if (intDiff > 0) {
+     //计算相关的天，小时，还有分钟，以及秒
+   day = Math.floor(intDiff / (60 * 60 * 24)); 
+   hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
+   minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
+   second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+    }
+    if (minute <= 9) minute = '0' + minute;
+    if (second <= 9) second = '0' + second;
+    $('#minute_show').html('<s></s>' + minute + '分');
+    $('#second_show').html('<s></s>' + second + '秒');
+    intDiff--;
+   }, 1000);
+}
+ //循环函数，是时钟运动起来
+ setInterval(function(){
+  if($('#minute_show').text() =='00分' && $('#second_show').text() =='00秒'){
+   clearInterval();
+  }
+ },1000)
+ 
+$(function () {
+   timer(intDiff);
+  });
+});
+
+
+
+
+</script>
+{/block}

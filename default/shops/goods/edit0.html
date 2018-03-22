@@ -1,0 +1,329 @@
+
+<style>
+.webuploader-pick {background: #e45050 none repeat scroll 0 0;}
+.box div{float: left; }
+.box #imgPicker{margin-left: 30px; }
+.box .display{ display:block; margin-left: 20px; line-height: 50px; font-size: 16px; font-weight: 700;}
+</style>
+
+<input type='hidden' id='goodsId' class='j-ipt' value='{$object["goodsId"]}'/>
+
+<table class='wst-form'>
+  <tr>
+     <th width='150'>商品名称<font color='red'>*</font>：</th>
+     <td width='300'>
+        <input type='text' class='j-ipt' id='goodsName' value='{$object["goodsName"]}' maxLength='100' data-rule='商品名称:required;' maxLength='20' style="width:250px;"/>
+     </td>
+     <td rowspan='6'>
+
+        <div id='goodsImgBox'>
+                <img src='http://jingomall.com.cn/{$object["goodsImg"]}' id='preview' width='150' height='150'>
+            </div>
+
+         <link rel="stylesheet" type="text/css" href="__STYLE__/shops/goods/webup/webuploader.css">
+         <script type="text/javascript" src="__STYLE__/shops/goods/webup/webuploader.min.js"></script>
+         <div id="uploadimg">
+                <div id="fileList" name="image" class="uploader-list"></div>
+                <div class="box">
+                    <div id="imgPicker">选择图片</div> <div class='display'></div>
+                </div> 
+         </div>
+       
+         <!--<input type="file"  id="pic_1" name="pic_1" class='j-ipt' value="选择图片" />-->
+         <!--<input type="submit" id="subpic" value="上传"/>-->
+        <!--<div id='goodsImgPicker'>请上传商品图片</div><span id='uploadMsg'></span>-->
+        <!--<input type='hidden' id='goodsImg' class='j-ipt' data-target='#msg_goodsImg' value='{if $object["goodsId"]>0}{$object["goodsImg"]}{/if}' data-rule="商品图片: required;"/>-->
+        <!--<span class='msg-box' id='msg_goodsImg'></span>-->
+     </td>
+
+  </tr>
+  <tr>
+     <th>商品类型<font color='red'>*</font>：</th>
+     <td>
+       <select id='goodsType' class='j-ipt' onchange="changeGoodsType(this.value)" {if $object["goodsId"]>0}disabled{/if}>
+         <option value='0' {if($object["goodsType"]==0)}selected{/if}>实物商品</option>
+         <option value='1' {if($object["goodsType"]==1)}selected{/if}>虚拟商品</option>
+       </select>
+     </td>
+  </tr>
+  <tr>
+     <th>商品编号<font color='red'>*</font>：</th>
+     <td><input type='text' class='j-ipt' id='goodsSn' value='{$object["goodsSn"]}' maxLength='20' data-rule='商品编号:required;'/></td>
+  </tr>
+  <tr>
+  <th width='150'>商品货号<font color='red'>*</font>：</th>
+     <td width='300'>
+        <input type='text' class='j-ipt' id='productNo' value='{$object["goodsSn"]}' maxLength='20' data-rule='商品货号:required;'/>
+     </td>
+  </tr>
+  <tr>
+     <th>市场价格<font color='red'>*</font>：</th>
+     <td><input type='text' class='j-ipt' id='marketPrice' value='{$object["marketPrice"]}' maxLength='10' data-rule='商场价格:required;'/></td>
+  </tr>
+  <tr>
+     <th>店铺价格<font color='red'>*</font>：</th>
+     <td><input type='text' class='j-ipt' id='shopPrice' value='{$object["shopPrice"]}' maxLength='10' data-rule='店铺价格:required;'/></td>
+  </tr>
+  <tr id='goodsStockTr' {if($object["goodsType"]==1)}style='display:none'{/if}>
+     <th>商品库存<font color='red'>*</font>：</th>
+     <td><input type='text' class='j-ipt' id='goodsStock' value='{$object["goodsStock"]}' maxLength='10' data-rule='商品库存:required;integer[+0]'/></td>
+  </tr>
+  <tr>
+     <th>预警库存<font color='red'>*</font>：</th>
+     <td colspan='2'><input type='text' class='j-ipt' id='warnStock' value='{$object["warnStock"]}' maxLength='10' data-rule='预警库存:required;integer[+0]'/></td>
+  </tr>
+  <tr>
+     <th>商品单位<font color='red'>*</font>：</th>
+     <td colspan='2'><input type='text' class='j-ipt' id='goodsUnit' value='{$object["goodsUnit"]}' maxLength='10' data-rule='商品单位:required;'/></td>
+  </tr>
+  <tr>
+     <th>SEO关键字：</th>
+     <td colspan='2'><input type='text' class='j-ipt' id='goodsSeoKeywords' maxLength='100' value='{$object["goodsSeoKeywords"]}'/></td>
+  </tr>
+  <tr>
+     <th>供应商<font color='red'>*</font>：</th>
+     <td colspan='2'><input type='text' class='j-ipt' id='supplier' value='{$object["supplier"]}' maxLength='20' style="width:250px;"/></td>
+  </tr>
+  <tr>
+     <th>省<font color='red'>*</font>：</th>
+     <td colspan='2'><input type='text' class='j-ipt' id='locationState' value='{$object["locationState"]}' maxLength='10'/></td>
+  </tr>
+  <tr>
+     <th>市<font color='red'>*</font>：</th>
+     <td colspan='2'><input type='text' class='j-ipt' id='locationCity' value='{$object["locationCity"]}' maxLength='10'/></td>
+  </tr>
+   <tr>
+     <th>店铺货号<font color='red'>*</font>：</th>
+     <td colspan='2'><input type='text' class='j-ipt' id='instoreNo' value='{$object["instoreNo"]}' maxLength='20' style="width:250px;"/></td>
+  </tr>
+   <tr>
+     <th>有效时间<font color='red'>*</font>：</th>
+     <td colspan='2'><input type='text' class='j-ipt' id='validTime' value='{$object["validTime"]}' maxLength='10' data-rule='有效时间:required;integer[+0]'/></td>
+  </tr>
+  <tr>
+     <th>商品促销信息：</th>
+     <td colspan='2'><textarea class='j-ipt' id='goodsTips' maxLength='100' style='width:500px;height:50px'>{$object["goodsTips"]}</textarea></td>
+  </tr>
+  {:hook('homeDocumentShopEditGoods',['goodsId'=>$object["goodsId"]])}
+  <tr>
+     <th>商品状态<font color='red'>*</font>：</th>
+     <td colspan='2'>
+      <div class="radio-box">
+        <label><input type='radio' name='isSale' id="isSale-1" class='j-ipt wst-radio' value='1' {if $object['isSale']==1}checked{/if}/><label for="isSale-1" class="mt-1"></label>上架</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <label><input type='radio' name='isSale' id="isSale-0" class='j-ipt wst-radio' value='0' {if $object['isSale']==0}checked{/if}/><label for="isSale-0" class="mt-1"></label>下架</label>
+      </div>
+     </td>
+  </tr>
+  <tr>
+     <th>商品属性：</th>
+     <td colspan='2'>
+      <div class="checkbox-box">
+        <label>
+          <input id="isRecom" name='isRecom' class="j-ipt wst-checkbox" {if $object['isRecom']==1}checked{/if} value="1" type="checkbox"/><label class="mt-1" for="isRecom"></label>推荐
+      </label>
+      <label>
+          <input id="isBest" name="isBest" class="j-ipt wst-checkbox" {if $object['isBest']==1}checked{/if} value="1" type="checkbox"/><label class="mt-1" for="isBest"></label>精品
+      </label>
+      <label>
+          <input id="isNew" name="isNew" class="j-ipt wst-checkbox" {if $object['isNew']==1}checked{/if} value="1" type="checkbox"/><label class="mt-1" for="isNew"></label>新品
+      </label>
+      <label>
+          <input id="isHot" name="isHot" class="j-ipt wst-checkbox" {if $object['isHot']==1}checked{/if} value="1" type="checkbox"/><label class="mt-1" for="isHot"></label>热销
+      </label>  
+      </div>     
+     </td>
+  </tr>
+  <tr>
+     <th>是否包邮：</th>
+     <td colspan='2'>
+     <div class="radio-box">
+        <label><input type='radio' name='isFreeShipping' id="isFreeShipping-1" class='j-ipt wst-radio' value='1' {if $object['isFreeShipping']==1}checked{/if}/><label for="isFreeShipping-1" class="mt-1"></label>包邮</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <label><input type='radio' name='isFreeShipping' id="isFreeShipping-0" class='j-ipt wst-radio' value='0' {if $object['isFreeShipping']==0}checked{/if}/><label for="isFreeShipping-0" class="mt-1"></label>不包邮</label>
+     </div>
+     </td>
+  </tr>
+  <tr>
+     <th>商城分类<font color='red'>*</font>：</th>
+     <td colspan='2'>
+         <select id="cat_0" class='ipt j-goodsCats' level="0" onchange="WST.ITGoodsCats({id:'cat_0',val:this.value,isRequire:true,className:'j-goodsCats',afterFunc:'lastGoodsCatCallback'});getBrands('brandId',this.value)">
+          <option value="">-请选择-</option>
+          {volist name=":WSTGoodsCats(0)" id="vo"}
+          <option value="{$vo['catId']}">{$vo['catName']}</option>
+          {/volist}
+       </select>
+     </td>
+  </tr>
+  <tr>
+     <th>本店分类：</th>
+     <td colspan='2'>
+         <select id="shopCatId1" class='j-ipt' onchange="getShopsCats('shopCatId2',this.value,'');">
+            <option value="">-请选择-</option>
+            {volist name=":WSTShopCats(0)" id="vo"}
+            <option value="{$vo['catId']}" {if $object['shopCatId1']==$vo['catId']}selected{/if}>{$vo['catName']}</option>
+            {/volist}
+         </select>
+         <select id='shopCatId2' class='j-ipt'>
+             <option value=''>请选择</option>
+         </select>
+     </td>
+  </tr>
+
+    <tr>
+        <th>将商品移动到：</th>
+        <td>
+            <select id="gg" name="goodsToShop">
+                <option value="">-请选择-</option>
+                {volist name=":shops()" id="vo"}
+                <option class="dd" value="{$vo['shopId']}">{$vo['shopName']}</option>
+                {/volist}
+            </select>
+            <input type="button" value="确认" onclick="javascript:aa({$object["goodsId"]})">
+        </td>
+    </tr>
+<!--   <tr>
+     <th>品牌：</th>
+     <td colspan='2'>
+         <select id="brandId" class='j-ipt'>
+            <option value="0">-请选择-</option>
+         </select>
+     </td>
+  </tr> -->
+  <tr>
+     <th>商品描述<font color='red'>*</font>：</th>
+     <td colspan='2'>
+         <textarea rows="2" cols="60" id='goodsDesc' class='j-ipt' name='goodsDesc' data-rule='商品描述:required;'>{$object['goodsDesc']}</textarea>
+     </td>
+  </tr>
+    {if condition="isset($pageNum)"}
+    <tr><input type="hidden" value="{$pageNum}"  id="pageNum" class='j-ipt'></tr>
+    <tr><input type="hidden" value="{$keyWord}"  id="keyWord" class='j-ipt'></tr>
+    <tr><input type="hidden" value="{$cat1}"  id="cat1" class='j-ipt'></tr>
+    <tr><input type="hidden" value="{$cat2Id}"  id="cat2Id" class='j-ipt'></tr>
+    <tr><input type="hidden" value="{$goodsType1}"  id="goodsType1" class='j-ipt'></tr>
+    <tr><input type="hidden" value="{$cat2Name}"  id="cat2Name" class='j-ipt'></tr>
+    <tr><input type="hidden" value="{$supplier}"  id="supplier1" class='j-ipt'></tr>
+    {/if}
+  <tr>
+     <td colspan='3' align='center' style='text-align:center;padding-top:10px;'>
+        <a class="s-btn" onclick='javascript:save()'>保&nbsp;存</a>
+        <a class="s-btn2" onclick="javascript:resetForm()">重&nbsp;置</a>
+     </td>
+  </tr>
+
+</table>
+
+
+<script>
+    var uploader = WebUploader.create({
+             auto: true, // 选完文件后，是否自动上传
+             swf: 'Uploader.swf', // swf文件路径
+             server: "{:url('home/goods/uploalPic')}", // 文件接收服务端
+             pick: '#imgPicker', // 选择文件的按钮。可选
+             // 只允许选择图片文件。
+    //       fileNumLimit :1, //验证文件总数量, 超出则不允许加入队列。
+             fileSingleSizeLimit : 1024*1024*0.6,
+         accept: {
+                 title: 'Images',
+                     extensions: 'gif,jpg,jpeg,png',
+                     mimeTypes: 'image/*'
+                  }
+     });
+
+    uploader.on( 'uploadBeforeSend', function( file ) {
+       var goodsId = $('#goodsId').val();
+        file.file.name =  goodsId +"_"+ file.file.name;
+    });
+
+    uploader.on( 'fileQueued', function( file ) {
+             var $list = $("#fileList"),
+                 //获取文件列表
+                 $li = $(
+                     '<div id="' + file.id + '" class="file-item thumbnail">' +
+                 '<img>' +
+                 '<div class="info">' + file.name + '</div>' +
+                 '</div>'
+             );
+             $img = $li.find('img');
+             $list.empty();
+        $list.append( $li ); // $list为容器jQuery实例
+             // 创建缩略图
+             uploader.makeThumb( file, function( error, src ) {
+                     if ( error ) {
+                             $img.replaceWith('<span>不能预览</span>');
+                             return;
+                        }
+                     $img.attr( 'src', src );//设置预览图
+                 }, 200, 200 ); //100x100为缩略图尺寸
+         });
+    // 文件上传过程中创建进度条实时显示。
+    uploader.on( 'uploadProgress', function( file, percentage ) {
+             var $li = $( '#'+file.id ),
+                 $percent = $li.find('.progress span');
+             //避免重复创建
+             if ( !$percent.length ) {
+                     $percent = $('<p class="progress"><span></span></p>').appendTo( $li ).find('span');
+                 }
+             $percent.css( 'width', percentage * 100 + '%' );
+         });
+
+
+    // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+    uploader.on( 'uploadSuccess', function( file, res ){
+              console.log(res);//这里可以得到上传后的文件路径
+                 $( '#'+file.id ).addClass('upload-state-done');
+                 $('.box .display').html(res);
+         });
+    // 文件上传失败，显示上传出错。
+    uploader.on( 'uploadError', function( file ) {
+             var $li = $( '#'+file.id ),
+                 $error = $li.find('div.error');
+             // 避免重复创建
+             if ( !$error.length ) {
+                     $error = $('<div class="error"></div>').appendTo( $li );
+                 }
+             $error.text('上传失败');
+         });
+    // 完成上传，成功或者失败，先删除进度条。
+    uploader.on( 'uploadComplete', function( file ) {
+             $( '#'+file.id ).find('.progress').remove();
+         });
+
+    uploader.on("error", function (type) {
+        console.log(type);
+             if (type == "F_TYPE_DENIED") {
+                WST.msg("请上传JPG、PNG、GIF、BMP格式文件", { icon: 2 });
+            } else if (type == "F_EXCEED_SIZE") {
+                WST.msg("文件大小不能超过2M", { icon: 2 });
+            }else {
+                WST.msg("文件上传出错！请检查后重新上传！错误代码", { icon: 2 });
+                 
+            }
+    })
+
+//    $(document).ready(function() {
+//        $("#subpic").click(function () {
+//            $("#editform").attr("action", "{:url('home/goods/uploalPic')}");
+//            $("#editform").submit();
+//
+//        });
+//    })
+
+</script>
+<script>
+         function aa(goodsId) {
+              var shopId = $('#gg option:selected').val();
+              if(shopId == ''){
+                  WST.msg('请选择店铺',{icon:2});
+                  return false;
+              }
+              $.post(WST.U('home/goods/goodsToShop'),{goodsId:goodsId,shopId:shopId},function(data){
+                  var json = WST.toJson(data);
+                  if(json.status == 1){
+                      WST.msg('操作成功！');
+                  }else{
+                      WST.msg('操作失败！');
+                  }
+              });
+//              alert(goodsId);
+          }
+      </script>

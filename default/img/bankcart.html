@@ -1,0 +1,159 @@
+{extend name="default/base" /}
+{block name="title"}我的购物车 - {:WSTConf('CONF.mallName')}{__block__}{/block}
+{block name="css"}
+<link href="__STYLE__/css/carts.css?v={$v}" rel="stylesheet">
+<link href="__STATIC__/plugins/validator/jquery.validator.css?v={$v}" rel="stylesheet">
+{/block}
+{block name="main"}
+<div class="wst-container">
+
+    <div class="pay-sbox-head">
+        <a href='{$Request.root.true}'>首页</a>&nbsp;&gt;&nbsp;支付
+    </div>
+    <div>
+        <div class="pay-tip1"></div>
+    </div>
+    <div class='pay-sbox'>
+        <h2>请填写银行卡信息</h2>
+      <div class="bank">
+          <form action="" method="post" class="bank_information" id="bank">
+              <div class="details">
+                  <lable class="details_lable">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</lable>
+                  <input type="text" class="details_input ipt" id="username" name="username">
+              </div>
+              <div class="details">
+                  <lable class="details_lable">卡&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</lable>
+                  <input type="text" class="details_input ipt" name="usercard" id="usercard" maxlength="19">
+              </div>
+              <div class="details">
+                  <lable class="details_lable">手&nbsp;&nbsp;机&nbsp;&nbsp;号：</lable>
+                  <input type="text" class="details_input ipt" name="usermobile" id="usermobile" maxlength="11">
+              </div>
+              <div class="details">
+                  <lable class="details_lable">银行名称：</lable>
+                  <input type="text" class="details_input ipt" name="bankName" id="bankName">
+              </div>
+              <div class="details">
+                  <lable class="details_lable">银行类型：</lable>
+                  <select name="bankType" id="bankType" class="ipt">
+                      <option value="">请选择</option>
+                      <option value="1041000">中国银行</option>
+                      <option value="1031000">中国农业银行</option>
+                      <option value="1021000">中国工商银行</option>
+                      <option value="1051000">中国建设银行</option>
+                      <option value="3012900">交通银行</option>
+                      <option value="3085840">招商银行</option>
+                      <option value="3051000">中国民生银行</option>
+                      <option value="3093910">兴业银行</option>
+                      <option value="3102900">上海浦东发展银行</option>
+                      <option value="3065810">广东发展银行</option>
+                      <option value="3021000">中信银行</option>
+                      <option value="3031000">光大银行</option>
+                      <option value="4031000">中国邮政储蓄银行</option>
+                      <option value="3071000">平安银行</option>
+                      <option value="3131000">北京银行</option>
+                      <option value="3133010">南京银行</option>
+                      <option value="3133320">宁波银行</option>
+                      <option value="3222900">上海农村商业银行</option>
+                      <option value="5021000">东亚银行</option>
+                  </select>
+              </div>
+              <div class="details">
+                  <lable class="details_lable">身份证号：</lable>
+                  <input type="text" class="details_input ipt" name="idCard" id="idCard" maxlength="18">
+              </div>
+              <div class="details">
+                  <lable class="details_lable">银行类别：</lable>
+                  <select name="cardType" id="cardType" class="ipt">
+                      <option value="">请选择</option>
+                      <option value="1">储蓄卡</option>
+                  </select>
+              </div>
+              <div class="determine"><button>确定</button></div>
+              <input type="hidden" value="{$payObj}" id="payObj" class="ipt">
+              <input type="hidden" value="{$orderNo}" id="orderNo" class="ipt">
+              <input type="hidden" value="{$isBatch}" id="isBatch" class="ipt">
+              <input type="hidden" value="{$payCode}" id="payCode" class="ipt">
+          </form>
+
+      </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript" src="__STATIC__/plugins/validator/jquery.validator.js?v={$v}"></script>
+<script type="text/javascript" src="__STATIC__/plugins/validator/local/zh-CN.js?v={$v}"></script>
+<script>
+//    function bankPayment(){
+//
+//    }
+    $(function () {
+        $('#bank').validator({
+            rules:{
+                mobile:[/^1[3|4|5|7|8]\d{9}$/,"请填写有效的手机号"],
+                card:[/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,"请输入有效身份证"],
+                username:[/^[\u4e00-\u9FA5\·]{2,10}$/,"请输入正确的姓名"],
+            },
+            fields:{
+                username:{
+                    rule:"required;username",
+                    mgs:{required:"请输入姓名"},
+                    tip:"请输入姓名",
+                },
+                usercard:{
+                    rule:"required;digits:true;length[16~19];",
+                    mgs:{required:"请输入卡号"},
+                    tip:"请输入卡号",
+                },
+                usermobile:{
+                    rule:"required;mobile;digits:true;",
+                    mgs:{required:"请输入手机号"},
+                    tip:"请输入手机号",
+                },
+                bankName:{
+                    rule:"required",
+                    mgs:{required:"请输入银行名称"},
+                    tip:"请输入银行名称",
+                },
+                bankType:{
+                    rule:"required",
+                    mgs:{required:"请输入银行类型"},
+                    tip:"请输入银行类型",
+                },
+                idCard:{
+                    rule:"required;length[18];card",
+                    mgs:{required:"请输入身份证号"},
+                    tip:"请输入身份证号",
+                },
+                cardType:{
+                    rule:"required",
+                    mgs:{required:"请输入银行类别"},
+                    tip:"请输入银行类别",
+                },
+            },
+            valid:function(form){
+                var params = WST.getParams('.ipt');
+                $.post("{:url('home/bankcart/toBankcart')}",{bankName:params['bankName'],bankType:params['bankType'],cardType:params['cardType'],idCard:params['idCard'],isBatch:params['isBatch'],orderNo:params['orderNo'],payCode:params['payCode'],payObj:params['payObj'],usercard:params['usercard'],usermobile:params['usermobile'],username:params['username']},function(data){
+                    if (data.result=='success'){
+                        post("{:url('home/bankcart/verificationPayment')}",{order:data.order});
+                    }
+                });
+            }
+        });
+    });
+function post(url,params) {
+    var temp = document.createElement("form");
+    temp.action = url;
+    temp.method = "post";
+    temp.style.display = "none";
+    for (var i in params) {
+        var opt = document.createElement("textarea");
+        opt.name = i;
+        opt.value = params[i];
+        temp.appendChild(opt);
+    }
+    document.body.appendChild(temp);
+    temp.submit();
+}
+</script>
+{/block}

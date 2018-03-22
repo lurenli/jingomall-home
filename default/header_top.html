@@ -1,0 +1,89 @@
+<div class="header">
+    <div class="header-top full-screen">
+        <div  class="banner default-width">
+            <div class="fl">服务热线：{:WSTConf('CONF.serviceTel')}</div>
+            <ul class="fr ulfl" id="Unlanded" >
+               <li>
+                    <a href="/login.html" target="_blank">登录</a>/
+               </li> 
+               <li>
+                    <a href="/register.html" target="_blank">注册</a>
+                </li> 
+            </ul>
+            <ul class="fr ulfl login " id="login" style="display:none;">
+                <li>
+                    <a href="{:Url('home/users/index')}">欢迎您，<span id="name1"></span></a>
+                </li>
+                <li> 
+                    <a onclick='WST.position(5,0)' href='{:Url("home/orders/waitReceive?homeMenuId=1")}'>待付款订单</a>
+                </li>
+                <li>
+                    <a href="{:Url('home/carts/index')}">购物车</a>
+                </li>
+                <li>
+                    <a href="{:Url('home/favorites/goods')}" onclick='WST.position(41,0)'>收藏夹</a>
+                </li>
+                <li>
+                    <a class="customer-service" href='{:Url("home/messages/index")}' target='_blank' onclick='WST.position(49,0)'>客户服务<span  id='wst-user-messages'>0</span></a>
+                </li>
+                <li class="pointer management"> 
+                    <span href=""> 商家管理</span>
+                    <ul class="lohin-dropdown">
+                       <li>
+                            <a href="javascript:void(0);" onclick="eliminate()">商家登陆</a>
+                        </li>
+                        <li>
+                                <a href="" >我要开店</a>
+                        </li>
+                        
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    function eliminate(){
+        WST.confirm({
+            content:'当前已有用户登录,是否继续登录？',
+            yes:function(index){
+                $.post(WST.U('home/users/editSession'),function(data){
+                    var json = WST.toJson(data);
+                    if(json.status == 1){
+                        WST.msg(json.msg,{icon:1});
+                        location.href = WST.U('home/shops/login');
+                    }else{
+                        WST.msg('退出失败',{icon:1});
+                    }
+
+                });
+            }
+        });
+    }
+    $.post("{:url('home/Users/getName')}", {id: ''}, function(data, textStatus) {
+        var json = WST.toJson(data);
+        if (json.status == 1) {
+            document.getElementById('name1').innerHTML = json.msg.userName;
+        } else {
+            WST.msg(json.msg, {
+                icon: 2
+            });
+        }
+    });
+   
+    window.onload = function qq() {
+        $.post("{:url('home/Users/getUserInfo')}", {
+            id: ''
+        }, function(data, textStatus) {
+            var json = WST.toJson(data);
+            console.log(json.status + '--'+'22');
+            if (json.status == 1) {
+
+                document.getElementById('name1').innerHTML = json.msg.userName;
+                $('#Unlanded').css("display","none");
+                $('#login').css("display","block");
+            }
+        });
+    }
+</script>

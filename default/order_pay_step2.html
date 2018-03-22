@@ -1,0 +1,53 @@
+{extend name="default/base" /}
+{block name="title"}我的购物车 - {:WSTConf('CONF.mallName')}{__block__}{/block}
+{block name="css"}
+<link href="__STYLE__/css/carts.css?v={$v}" rel="stylesheet">
+{/block}
+{block name="main"}
+<div class="wst-container">
+	<div class="pay-sbox-top">
+		<h5>请及时付款，以便订单尽快处理</h5>
+		<p>
+			交易号:
+			<span>12125454</span>
+			<span>实付：￥<b class="wst-fred">{$needPay}</b></span>
+		</p>
+		<p class="warn">请在<b>30分钟</b>内付款，否则交易会被取消！</p>
+	</div>
+	<div class="pay-sbox">
+		<div class="box-wei">
+			<div style="" class="wst-qrcode"></div>
+			<div class="wst-img"></div>
+		</div>
+		<p class="check-other"><a href="javascript:void(0)" onclick="javascript:history.go(-1)">选择其他支付方式 >></a></p>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STYLE__/js/carts.js?v={$v}'></script>
+<script type='text/javascript' src='__STYLE__/js/qrcode.js?v={$v}'></script>
+<script>
+	{if condition="$out_trade_no != '' and $code_url!=''"}
+		var qr = qrcode(10, 'M');
+			qr.addData("{$code_url}");
+			qr.make();
+		$(".wst-qrcode").html(qr.createImgTag());
+	
+	{/if}
+	setInterval(function(){
+		var params = {};
+			params.trade_no = "{$out_trade_no}";
+		$.ajax({
+			url:"{:url('home/weixinpays/getPayStatus')}",
+			data:params,
+			type:"POST",
+			dataType:"json",
+			success:function(data){
+				if(data.status==1){
+					location.href = "{:url('home/weixinpays/paySuccess')}";
+				}
+			}
+		});
+	},1500);
+</script>
+{/block}

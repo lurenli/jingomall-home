@@ -1,0 +1,49 @@
+{extend name="default/shops/base" /}
+{block name="title"}违规详细 - 卖家中心{__block__}{/block}
+{block name="css"}
+{/block}
+{block name="content"}
+  <div class="wst-shop-head"><span>违规详细</span></div>
+
+  <div class='wst-shop-content'>
+    <table border='0' class='wst-complain-detail'>
+    			
+           <tr>
+              <td colspan='2' class='head'>违规信息</td>
+           </tr>
+           <tr>
+              <th width='80'>商品名称：</th>
+              <td>{$rs['goodsName']}</td>
+           </tr>
+            <tr>
+              <th width='80'>商品ID：</th>
+              <td>{$rs['goodsId']}</td>
+           </tr>
+            <tr>
+              <th width='80'>商品编号：</th>
+              <td>{$rs['goodsSn']}</td>
+           </tr>
+           <tr>
+              <th width='80'>所属店铺：</th>
+              <td>{$rs['supplier']}</td>
+           </tr>
+            
+           <tr>
+              <th  width='80'>违规内容：</th>
+              <td>{$rs['illegalRemarks']}</td>
+           </tr>
+          <tr>
+              <td colspan='2' style='text-align:center;'><a href="javascript:history.go(-1)" class="s-btn">返回</a></td>
+           </tr>
+        </table>
+
+
+       
+      
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STYLE__/shops/orders/orders.js?v={$v}'></script>
+<script>
+
+</script> 
+{/block}

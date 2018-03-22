@@ -1,0 +1,82 @@
+{extend name="default/base" /}
+{block name="title"}我的购物车 - {:WSTConf('CONF.mallName')}{__block__}{/block}
+{block name="css"}
+<link href="__STYLE__/css/carts.css?v={$v}" rel="stylesheet">
+<link href="__STATIC__/plugins/validator/jquery.validator.css?v={$v}" rel="stylesheet">
+{/block}
+{block name="main"}
+<div class="wst-container">
+
+    <div class="pay-sbox-head">
+        <a href='{$Request.root.true}'>首页</a>&nbsp;&gt;&nbsp;支付
+    </div>
+    <div>
+        <div class="pay-tip2"></div>
+    </div>
+    <div class='pay-sbox'>
+
+        <div class="bank">
+            <form action="" method="post" class="bank_information" id="bank">
+                <div class="details">
+                    <lable class="details_lable">手机号：</lable>
+                    <input type="text" class="details_input ipt" id="usermobile" name="usermobile" maxlength="11">
+                </div>
+                <div class="details">
+                    <lable class="details_lable">验证码：</lable>
+                    <input type="text" class="details_input ipt" name="usercode" id="usercode" maxlength="6">
+                </div>
+                <div class="determine"><button>确定</button></div>
+                <input type="hidden" value="{$order}" id="order" class="ipt">
+            </form>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript" src="__STATIC__/plugins/validator/jquery.validator.js?v={$v}"></script>
+<script type="text/javascript" src="__STATIC__/plugins/validator/local/zh-CN.js?v={$v}"></script>
+<script>
+    $(function () {
+        $('#bank').validator({
+            rules:{
+                mobile:[/^1[3|4|5|7|8]\d{9}$/,"请填写有效的手机号"],
+            },
+            fields:{
+                usermobile:{
+                    rule:"required;mobile;digits:true;",
+                    mgs:{required:"请输入手机号"},
+                    tip:"请输入手机号",
+                },
+                usercode:{
+                    rule:"required;digits:true;",
+                    mgs:{required:"请输入验证码"},
+                    tip:"请输入验证码",
+                },
+
+            },
+            valid:function(form){
+                var params = WST.getParams('.ipt');
+                $.post("{:url('home/bankcart/toverificationPayment')}",{usermobile:params['usermobile'],usercode:params['usercode'],order:params['order']},function (data) {
+                    if(data.result=='success'){
+                        post("{:url('home/bankcart/processOrders')}",{order:data.order});
+                    }
+                });
+            }
+        });
+    });
+    function post(url,params) {
+        var temp = document.createElement("form");
+        temp.action = url;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var i in params) {
+            var opt = document.createElement("textarea");
+            opt.name = i;
+            opt.value = params[i];
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+    }
+</script>
+{/block}

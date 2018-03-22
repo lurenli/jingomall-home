@@ -1,0 +1,201 @@
+{extend name="default/base" /}
+{block name="title"}{:WSTConf('CONF.mallName')}{__block__}{/block}
+{block name="meta"}
+<meta name="description" content="{:WSTConf('CONF.seoMallDesc')}">
+<meta name="Keywords" content="{:WSTConf('CONF.seoMallKeywords')}">
+{/block}
+{block name="css"}
+<link href="__STYLE__/css/index.css?v={$v}" rel="stylesheet">
+<style>
+	#wst-nav-items{
+		display: none;
+	}
+</style>
+{/block}
+{block name="main"}
+<div class="wst-ads"  style="padding-top:20px; background: #fafafa;"
+>
+	<div class="wst-slide" id="wst-slide">
+		<ul class="wst-slide-items">
+			{wst:ads code="ads-index" cache='86400'}
+				<a href="{$vo.adURL}" {if ($vo['isOpen'])}target='_blank'{/if} {if ($vo['adURL']!='')}onclick="WST.recordClick({$vo['adId']})"{/if}><li style="background: url(__ROOT__/{$vo.adFile}) no-repeat  scroll center top;background-size:cover;" ></li></a>
+			{/wst:ads}
+		</ul>
+		<div class="wst-slide-numbox">
+			<div class="wst-slide-controls">
+			  	{wst:ads code="ads-index" cache='86400' key='k'}
+				  	{if condition="$k+1 eq 1"}
+				  		 <span class="curr">{$k+1}</span>
+				  	{else/}
+				  		 <span class="">{$k+1}</span>
+				  	{/if}
+				{/wst:ads}
+			</div>
+		</div>
+	</div>
+</div>
+<div class='wst-main'>
+	<div class='wst-container'>
+<div id="floor-box-all">
+<?php
+
+	foreach ($floors as $key => $value) {
+		foreach ($value['data'] as $k => $vv) {
+			$good = $vv;
+			break;
+		}
+?>
+        <div class="floor-box">
+			<div class="floor-header c1" id="c1">
+		<div class="floor-header-f1">
+			<p class="floor-left-title">
+				<a name="1F"></a></p>
+			<h1 style="height: 32px;line-height: 32px;border-left: 2px solid red;padding-left: 10px;margin-top: 20px;">{:str_replace('、','、',$value['catName'])}</h1>
+		</div>
+   	</div>
+		   	<div class="left-big-pic">
+		   		{if (!empty($value['left']))}
+	            <a href="{:Url('home/goods/detail','id='.$value['left']['goodsId'])}"><img class="left-big-pic-img goodsImg" src="http://jingomall.com.cn/{$value['left']['goodsImg']}" title="{$value['left']['goodsName']}"></a>
+            	<dl class="left-big-name">
+            		<dt>{:WSTMSubstr($value['left']['goodsName'],0,33)}</dt>
+            		<dd class="jx-price"><span class="jx">经销价</span> ￥<span class="price">{$value['left']['shopPrice']}</span></dd>&nbsp;&nbsp;
+            		<dd class="yj-price">原价 ￥<span>{$value['left']['marketPrice']}</span></dd>
+            	</dl>
+		   		{/if}
+			</div>
+			<div class="right-small-pics">
+	<?php	
+				foreach ($value['data'] as $k => $cs) {
+	?>				
+						<a  target='_blank' href="{:Url('home/goods/detail','id='.$cs['goodsId'])}">
+						<div class="right-big-one ">
+								<div class="top"></div>
+					<div class="left"></div>
+					<div class="bottom"></div>
+					<div class="right"></div>
+
+					<!--<img  class="index_lazy" title="{$cs['goodsName']}" align="" data-original="__ROOT__/{$cs['goodsImg']}" />-->
+					<img src="" class="goodsImg index_lazy" title="{$cs['goodsName']}" align="" data-original="http://jingomall.com.cn/{$cs['goodsImg']}" />
+					<dl class="right-small-name">
+						<dt>{:WSTMSubstr($cs['goodsName'],0,33)}</dt>
+						<dd>
+							<div class="jx">经销价</div>
+							<div class="jx-price"><span class="colour">￥</span><span class="price">{$cs['shopPrice']}</span></div>
+							<div class="yj-price"><span>原价</span> ￥<span>{$cs['marketPrice']}</span></div>
+							
+						</dd>
+					</dl>
+
+									    
+
+						</div>
+						</a>
+	<?php
+				}
+	?>
+			</div>
+		</div>	
+<?php
+	}	    
+?>
+</div>		
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+      $("img.index_lazy").lazyload({effect: "fadeIn"});
+  });
+</script>
+<script type="text/javascript">
+	$(".right-big-one").mouseenter(function(){
+	$(this).children("div:even").stop().animate({
+		"width":"100%",
+	},500).css("background","#333");
+	$(this).children("div:odd").stop().animate({
+		"height":"100%",
+	},500).css("background","#333");
+});
+$(".right-big-one").mouseleave(function(){
+	// $(this).children("p").animate({
+	// 	"height":"0px"
+	// });
+	$(this).children("div:even").stop().animate({
+		"width":"0%",
+	},500).css("background","#333");
+	$(this).children("div:odd").stop().animate({
+		"height":"0%",
+	},500).css("background","#333");
+});
+</script>
+<script type="text/javascript">
+	 $(function(){
+         var offsetTop = $('.wst-ads').offset().top; //元素距离顶部的高度
+	    $(window).scroll(function(){
+	     var scrollTop = $(document).scrollTop();
+	     if(scrollTop>offsetTop){
+	        $('#fixed').show();
+	        $('#fixed').css({'position':'fixed'});
+	        $('#classify').css({'position':'fixed','top':'10px','width':'190px'});
+	        $("#classification").css({"background":"#E60B49",'width':'190px','height':'40px'});
+	        $('#index_menus_sub').css({'margin-top':'16px'});
+	     }else{
+	        $('#fixed').hide();
+	        $("#fixed").css("position", "static");
+	        $('#classify').css({'position':'static','width':''}); 
+	         $("#classification").css({"background-color":"#8a072c",'height':'36px'});
+	         $('#index_menus_sub').css({'margin-top':''});
+	     }
+	   });
+
+});
+</script>
+<div id="screen-left-nav" style="left: 200px; display:none;">
+<ul id="floornav">
+	<li class="lnav Louti" id="F1" >
+		<img src="__STYLE__/img/left1.png"/><span>服饰鞋帽</span>
+		<div class="screen-left-nav-line"></div>
+	</li>
+	<li class="lnav Louti" id="F2">
+		<img src="__STYLE__/img/lfte10.png"/><span>礼品箱包</span>
+		<div class="screen-left-nav-line"></div>
+	</li>
+	<li class="lnav Louti" id="F3">
+		<img src="__STYLE__/img/lfte9.png"/><span>家居家装</span>
+		<div class="screen-left-nav-line"></div>
+	</li>
+	<li class="lnav Louti" id="F4">
+		<img src="__STYLE__/img/lfte8.png"/><span>数码办公</span>
+		<div class="screen-left-nav-line"></div>
+	</li>
+	<li class="lnav Louti" id="F5">
+		<img src="__STYLE__/img/lfte7.png"/><span>家用电器</span>
+		<div class="screen-left-nav-line"></div>
+	</li>
+	<li class="lnav Louti" id="F6">
+		<img src="__STYLE__/img/lfte6.png"/><span>个护化妆</span>
+		<div class="screen-left-nav-line"></div>
+	</li>
+	<li class="lnav Louti" id="F7">
+		<img src="__STYLE__/img/lfte5.png"/><span>珠宝手表</span>
+		<div class="screen-left-nav-line"></div>
+	</li>
+	<li class="lnav Louti" id="F8">
+	   <img src="__STYLE__/img/lfte2.png"/><span>汽车用品</span>
+	   <div class="screen-left-nav-line"></div>
+		
+	</li>
+	<li class="lnav Louti" id="F9">
+	  <img class="goodsImg" src="__STYLE__/img/lfte12.png"/><span>厨房用具</span>
+	  <div class="screen-left-nav-line"></div>
+	</li>
+	 
+	<li class="lnav Louti" id="F10">
+	   <img class="goodsImg" src="__STYLE__/img/icon_goodsclass_listggg.png" /><span>母婴用品</span>
+	</li>
+</ul>
+</div>
+{include file="default/right_cart"/}
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__ROOT__/static/plugins/lazyload/jquery.lazyload.min.js?v={$v}'></script>
+<script type='text/javascript' src='__STYLE__/js/index.js?v={$v}'></script>
+{/block}
+{/block}
